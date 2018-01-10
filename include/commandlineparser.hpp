@@ -5,8 +5,8 @@
 #include <vector>
 #include <functional>
 #include <map>
-namespace CommandLine
-{
+namespace CP 
+{ 
     using CommandLineArgumentType = std::string;
 
     class CommandLineOptionManager
@@ -17,7 +17,6 @@ namespace CommandLine
         private:
         std::map<std::string,std::function<void(const std::vector<CommandLineArgumentType>&)>> m_function_lut;
     };
-    
 }
 
 #endif
