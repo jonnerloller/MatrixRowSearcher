@@ -8,14 +8,20 @@
 namespace CP 
 { 
     using CommandLineArgumentType = std::string;
-
+    using CommandLineArgumentPack = std::vector<CommandLineArgumentType>;
+    using CommandLineCallback = std::function<void(const CommandLineArgumentPack&)>;
     class CommandLineOptionManager
     {
         public:
-        void AddCommandLineOption(const std::string& option, std::function<void(const std::vector<CommandLineArgumentType>&)>& functor);
+        void AddCommandLineOption(const std::string& option,const std::string& description, CommandLineCallback& functor);
         void ProcessCommandLine(const std::string& option, std::vector<CommandLineArgumentType>&& arguments);
         private:
-        std::map<std::string,std::function<void(const std::vector<CommandLineArgumentType>&)>> m_function_lut;
+        struct CommandLineData
+        {
+            std::string description;
+            CommandLineCallback functor;
+        };
+        std::map<std::string,CommandLineData> m_CommandLineLUT;
     };
 }
 
