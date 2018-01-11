@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
     CP::MatrixRowSearcher temp();
 
     CP::SearchMatrix data;
-    std::vector<int> test = {1,2,3,1,1,4,5,6};
+    std::vector<int> test = {1,2,3,1,1,4,5,6,7};
     data.push_back(std::move(test));
     CP::SequenceSearcher searcher(data);
     std::cout << "Searcher Created" << std::endl;
