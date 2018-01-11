@@ -1,4 +1,5 @@
 #include "../include/sequencesearcher.hpp"
+#include <iostream>
 namespace CP
 {
     SequenceSearcher::SequenceSearcher(const SearchMatrix& inputData)
@@ -14,9 +15,10 @@ namespace CP
             }
         }
     }    
-    RowIndices SequenceSearcher::Search()
+    RowIndices SequenceSearcher::Search(const std::vector<int>&sequence)
     {
-
+        std::cout << "Searching" << std::endl;
+        return RowIndices();
     }
 
     int SequenceSearcher::GetMaxPossibleLengthOfSequenceFromColumnIndex(int rowIndex,ColumnIndex colIndex)

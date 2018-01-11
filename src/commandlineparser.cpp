@@ -8,5 +8,6 @@ namespace CP
 
     void CommandLineOptionManager::ProcessCommandLine(const std::string& option, std::vector<CommandLineArgumentType>&& arguments)
     {
+        m_CommandLineLUT[option].functor(arguments);
     }
 }

@@ -17,7 +17,7 @@ namespace CP
         Searcher& operator = (const Searcher& rhs) = delete;
         Searcher& operator = (Searcher&& rhs) = delete;
         virtual ~Searcher() = default;
-        virtual RowIndices Search() = 0;
+        virtual RowIndices Search(const std::vector<int>&sequence) = 0;
         protected:
         private:
         const SearchMatrix& m_InputDataRef;
