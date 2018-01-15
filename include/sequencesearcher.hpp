@@ -10,7 +10,7 @@ namespace CP
     class SequenceSearcher : public Searcher
     {
         public:
-            SequenceSearcher(const SearchData& inputData) :Searcher(inputData) {}
+            SequenceSearcher(const std::shared_ptr<SearchData>& inputData) :Searcher(inputData) {}
         SequenceSearcher(const SequenceSearcher& rhs) = delete;
         SequenceSearcher(SequenceSearcher&& rhs) = delete;
         SequenceSearcher& operator = (const SequenceSearcher& rhs) = delete;
