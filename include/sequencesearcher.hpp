@@ -2,14 +2,18 @@
 #define SEQUENCESEARCH_HPP
 #include "searcher.hpp"
 #include <unordered_map>
+#include <memory>
 namespace CP
 {
+    struct SearchNode
+    {
+        std::unordered_map<SearchValue,std::unique_ptr<SearchNode>> m_children;
+        SearchNode* InsertNode(SearchValue key);
+        SearchNode* FindNode(SearchValue key);
+    };
+
     class SequenceSearcher : public Searcher
     {
-        private:
-        using ColumnIndex = int;
-        using ValuePositions = std::vector<ColumnIndex>;
-        using HashTable = std::unordered_map<SearchValue,ValuePositions>;
         public:
         SequenceSearcher(const SearchMatrix& inputData);
         SequenceSearcher(const SequenceSearcher& rhs) = delete;
@@ -21,10 +25,9 @@ namespace CP
         protected:
         private:
 
-        int GetMaxPossibleLengthOfSequenceFromColumnIndex(int rowIndex,ColumnIndex colIndex);
+        bool SearchRowForSequence(int row, const std::vector<int>&sequence);
 
-
-        HashTable m_ValuePositionTable;
+        std::vector<std::unique_ptr<SearchNode>> m_roots;
     };
 }
 
