@@ -1,8 +1,8 @@
-SOURCEFILES = src/searchprogram.cpp src/commandlineparser.cpp src/matrixrowsearch.cpp src/searchapplication.cpp src/sequencesearcher.cpp
+SOURCEFILES = src/searchprogram.cpp src/commandlineparser.cpp src/matrixrowsearch.cpp src/searchapplication.cpp src/sequencesearcher.cpp src/existsearcher.cpp src/searcher.cpp
 #Will add tests later. Don't think i need to output intermediate .o files for such a small project.
 TESTFILES = 
 
-GCCFLAGS = -std=c++17 -Wall -Wextra
+GCCFLAGS = -std=c++14 -Wall -Wextra
 GCCOPTIMIZE = -O3
 
 
