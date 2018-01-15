@@ -1,4 +1,4 @@
-SOURCEFILES = src/searchprogram.cpp src/commandlineparser.cpp src/matrixrowsearch.cpp src/searchapplication.cpp src/sequencesearcher.cpp src/existsearcher.cpp src/searcher.cpp
+SOURCEFILES = src/searchprogram.cpp src/matrixrowsearch.cpp src/searchapplication.cpp src/sequencesearcher.cpp src/existsearcher.cpp src/searcher.cpp
 #Will add tests later. Don't think i need to output intermediate .o files for such a small project.
 TESTFILES = 
 

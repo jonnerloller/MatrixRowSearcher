@@ -8,7 +8,7 @@ namespace CP
     class ExistSearcher : public Searcher
     {
     public:
-        ExistSearcher(const SearchData& inputData) :Searcher(inputData) {}
+        ExistSearcher(const std::shared_ptr<SearchData>& inputData) :Searcher(inputData) {}
         ExistSearcher(const ExistSearcher& rhs) = delete;
         ExistSearcher(ExistSearcher&& rhs) = delete;
         ExistSearcher& operator = (const ExistSearcher& rhs) = delete;

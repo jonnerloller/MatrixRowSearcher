@@ -6,7 +6,7 @@
 namespace CP
 {
     using SearchValue = int;
-    using RowData = std::vector<int>;
+    using RowData = std::vector<SearchValue>;
     using SearchMatrix = std::vector<RowData>;
 
     struct SearchNode
@@ -18,13 +18,13 @@ namespace CP
 
     struct SearchData
     {
-        SearchData(const SearchMatrix& inputData);
+        SearchData(const SearchMatrix&& inputData);
         SearchData(const SearchData& rhs) = delete;
         SearchData(SearchData&& rhs) = delete;
         SearchData& operator = (const SearchData& rhs) = delete;
         SearchData& operator = (SearchData&& rhs) = delete;
 
-        const SearchMatrix& m_InputDataRef;
+        SearchMatrix m_InputData;
         std::vector<std::unique_ptr<SearchNode>> m_PreProcessedData;
     };
 
@@ -32,15 +32,15 @@ namespace CP
     class Searcher
     {
         public:
-        Searcher(const SearchData& searchData):m_SearchDataRef(searchData){}
-        Searcher(const Searcher& rhs) = delete;
-        Searcher(Searcher&& rhs) = delete;
-        Searcher& operator = (const Searcher& rhs) = delete;
-        Searcher& operator = (Searcher&& rhs) = delete;
-        virtual ~Searcher() = default;
-        virtual RowIndices Search(const std::vector<int>&sequence) = 0;
+            Searcher(const std::shared_ptr<SearchData>& searchData):m_SearchData(searchData){}
+            Searcher(const Searcher& rhs) = delete;
+            Searcher(Searcher&& rhs) = delete;
+            Searcher& operator = (const Searcher& rhs) = delete;
+            Searcher& operator = (Searcher&& rhs) = delete;
+            virtual ~Searcher() = default;
+            virtual RowIndices Search(const std::vector<int>&sequence) = 0;
         protected:
-        const SearchData& m_SearchDataRef;
+            std::shared_ptr<SearchData> m_SearchData;
         private:
         
     };

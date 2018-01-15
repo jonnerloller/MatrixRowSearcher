@@ -1,8 +1,8 @@
 #include "../include/searcher.hpp"
 namespace CP
 {
-    SearchData::SearchData(const SearchMatrix& inputData)
-        :m_InputDataRef(inputData)
+    SearchData::SearchData(const SearchMatrix&& inputData)
+        :m_InputData(inputData)
     {
         m_PreProcessedData.reserve(inputData.size());
         for (auto & row : inputData)
