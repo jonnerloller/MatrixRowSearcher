@@ -3,7 +3,7 @@
 #include <iterator>
 namespace CP
 {  
-    RowIndices SequenceSearcher::Search(const std::vector<int>&sequence)
+    RowIndices SequenceSearcher::Search(const CP::RowData&sequence)
     {
         RowIndices rows;
         rows.reserve(m_SearchData->m_InputData.size());
@@ -19,7 +19,7 @@ namespace CP
         return rows;
     }
 
-    bool SequenceSearcher::SearchRowForSequence(int row, const std::vector<int>&sequence)
+    bool SequenceSearcher::SearchRowForSequence(int row, const CP::RowData&sequence)
     {
         SearchNode* currentNode = m_SearchData->m_PreProcessedData[row].get();
         // iterate through nodes. If there is a next node, the sequence exists.

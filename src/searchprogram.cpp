@@ -2,6 +2,8 @@
 #include "../include/matrixrowsearch.hpp"
 #include "../include/sequencesearcher.hpp"
 #include "../include/existsearcher.hpp"
+#include "../include/commandlineoptions.hpp"
+#include "../include/unittests.hpp"
 #include <iostream>
 #include <functional>
 #include <cstring>
@@ -10,35 +12,29 @@
 #include <iterator>
 #include <string>
 #include <cstdlib>
-void LoadFile(const std::string& str)
-{
-    std::ifstream file(str);
-    std::istream_iterator<int> it(file);
-    std::istream_iterator<int> eof;
-    std::vector<int> data;
-    std::copy(it, eof, std::back_inserter(data));
-    CP::SearchMatrix searchMatrix;
-    // First 2 arguments are Width and Height
-    if (data.size() > 2)
-    {
-        int width = data[0];
-        int height = data[1];
 
-        // We read all the matrix data together.
-        // the first row starts after the first 2 arguments
-        // we need to offset each row and copy the data.
-        int rowOffset = 2;
-        searchMatrix.resize(height);
-        for (int i = 0; i < height; ++i)
-        {
-            searchMatrix[i].resize(width);
-            std::copy(data.begin() + rowOffset, data.begin() + rowOffset + width, searchMatrix[i].begin());
-            rowOffset += width;
-        }
-        std::shared_ptr<CP::SearchData> searchData = std::make_shared<CP::SearchData>(std::move(searchMatrix));
-        CP::MatrixRowSearcher& matrixRowSearcher = CP::MatrixRowSearcher::GetInstance();
-        matrixRowSearcher.SetSearchData(searchData);
+CP::RowData ConvertCommandLineArgumentsToInt(CP::CommandLineOptions::ArgumentPack&& arguments)
+{
+    CP::RowData convertedArguments;
+    convertedArguments.reserve(arguments.size());
+    for (const auto& arg : arguments)
+    {
+        convertedArguments.push_back(std::atoi(arg.c_str()));
     }
+    return convertedArguments;
+}
+
+void RunUnitTests(const std::string&, CP::CommandLineOptions::ArgumentPack&&)
+{
+    CP::RunSequenceSearchUnitTests();
+    CP::RunExistSearchUnitTests();
+}
+
+void PerformSequenceSearch(const std::string& argIdentifier, CP::CommandLineOptions::ArgumentPack&& arguments)
+{
+    CP::RowData convertedArguments = ConvertCommandLineArgumentsToInt(std::move(arguments));
+    CP::MatrixRowSearcher& matrixRowSearcher = CP::MatrixRowSearcher::GetInstance();
+    matrixRowSearcher.Search(argIdentifier, convertedArguments);
 }
 
 void ProcessCommandLineArgument(std::string arg)
@@ -48,41 +44,51 @@ void ProcessCommandLineArgument(std::string arg)
     if (arg[0] == '/')
     {
         size_t functionSeperatorPos = arg.find(":");
+        bool hasArguments = functionSeperatorPos != std::numeric_limits<size_t>::max();
         // skip the initial /
         // also we don't want to store the ':' so we have to do an offset.
-        std::string searchFunctionName = arg.substr(1, functionSeperatorPos - 1);
+        std::string commandLineOptionName = arg.substr(1, functionSeperatorPos - 1);
         
         size_t argumentSeperatorPos = arg.find(",", functionSeperatorPos);
         
         // we don't want to start with ',' so we do an offset
         size_t lastArgumentSeperatorPos = functionSeperatorPos + 1;
         std::string sequenceArgumentString;
-        CP::RowData sequenceArguments;
+        std::vector<std::string> arguments;
         // we process it in based on the comma.
         while (argumentSeperatorPos != std::numeric_limits<size_t>::max())
         {
             sequenceArgumentString = arg.substr(lastArgumentSeperatorPos, argumentSeperatorPos - lastArgumentSeperatorPos);
-            CP::SearchValue searchArgumentValue = std::atoi(sequenceArgumentString.c_str());
-            sequenceArguments.push_back(searchArgumentValue);
+           
+            arguments.push_back(sequenceArgumentString);
             // we don't want to start with ',' so we do an offset
             lastArgumentSeperatorPos = argumentSeperatorPos + 1;
             argumentSeperatorPos = arg.find(",", lastArgumentSeperatorPos);
         }
          //we have to process the last argument.
+        if(hasArguments)
         {
             // have to do a -1 since string iteratres from 0 -> strlen - 1
             sequenceArgumentString = arg.substr(lastArgumentSeperatorPos, arg.length() - 1);
-            CP::SearchValue searchArgumentValue = std::atoi(sequenceArgumentString.c_str());
-            sequenceArguments.push_back(searchArgumentValue);
+            arguments.push_back(sequenceArgumentString);
         }
-        CP::MatrixRowSearcher& matrixRowSearcher = CP::MatrixRowSearcher::GetInstance();
-        matrixRowSearcher.Search(searchFunctionName, sequenceArguments);
+        CP::CommandLineOptions::GetInstance().RunCommandLine(commandLineOptionName, std::move(arguments));
+        
     }
     // Assumes that the first argument is the filename to load.
     else
     {
-        LoadFile(arg);
+        CP::MatrixRowSearcher::LoadFile(arg);
     }
+}
+
+void InitCommandLineArguments()
+{
+    CP::CommandLineOptions& commandLineOptions = CP::CommandLineOptions::GetInstance();
+    commandLineOptions.AddCommandLineOption("sequenceSearch", PerformSequenceSearch);
+    commandLineOptions.AddCommandLineOption("existSearch", PerformSequenceSearch);
+
+    commandLineOptions.AddCommandLineOption("unitTests", RunUnitTests);
 }
 
 int main(int argc, char* argv[])
@@ -90,6 +96,8 @@ int main(int argc, char* argv[])
     
     // argv [1] = inputFile 
     // argv [2] = /searchSequence:1,2,3,4
+
+    InitCommandLineArguments();
 
     for (int arg = 1; arg < argc; ++arg)
     {

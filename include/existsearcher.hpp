@@ -14,11 +14,11 @@ namespace CP
         ExistSearcher& operator = (const ExistSearcher& rhs) = delete;
         ExistSearcher& operator = (ExistSearcher&& rhs) = delete;
         virtual ~ExistSearcher() = default;
-        virtual RowIndices Search(const std::vector<int>&sequence) override;
+        virtual RowIndices Search(const CP::RowData&sequence) override;
     protected:
     private:
 
-        bool SearchRowForSequence(int row, const std::vector<int>&sequence);
+        bool SearchRowForSequence(int row, const CP::RowData&sequence);
     };
 }
 

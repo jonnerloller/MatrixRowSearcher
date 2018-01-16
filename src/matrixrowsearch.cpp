@@ -2,6 +2,8 @@
 #include "../include/sequencesearcher.hpp"
 #include "../include/existsearcher.hpp"
 #include <utility>
+#include <fstream>
+#include <iterator>
 namespace CP
 {
     MatrixRowSearcher& MatrixRowSearcher::GetInstance()
@@ -26,7 +28,7 @@ namespace CP
     RowIndices MatrixRowSearcher::Search(const std::string searchName, const RowData& sequence)
     {
         auto it = m_Searches.find(searchName);
-        if(it != m_Searches.end())
+        if (it != m_Searches.end())
         {
             return it->second->Search(sequence);
         }
@@ -36,5 +38,34 @@ namespace CP
     void MatrixRowSearcher::Add(const std::string searchName, std::unique_ptr<Searcher>&& searchFunction)
     {
         m_Searches.emplace(std::make_pair(searchName, std::unique_ptr<Searcher>(std::move(searchFunction))));
+    }
+    void MatrixRowSearcher::LoadFile(const std::string& str)
+    {
+        std::ifstream file(str);
+        std::istream_iterator<int> it(file);
+        std::istream_iterator<int> eof;
+        CP::RowData data;
+        std::copy(it, eof, std::back_inserter(data));
+        CP::SearchMatrix searchMatrix;
+        // First 2 arguments are Width and Height
+        if (data.size() > 2)
+        {
+            int width = data[0];
+            int height = data[1];
+
+            // We read all the matrix data together.
+            // the first row starts after the first 2 arguments
+            // we need to offset each row and copy the data.
+            int rowOffset = 2;
+            searchMatrix.resize(height);
+            for (int i = 0; i < height; ++i)
+            {
+                searchMatrix[i].resize(width);
+                std::copy(data.begin() + rowOffset, data.begin() + rowOffset + width, searchMatrix[i].begin());
+                rowOffset += width;
+            }
+            std::shared_ptr<CP::SearchData> searchData = std::make_shared<CP::SearchData>(std::move(searchMatrix));
+            GetInstance().SetSearchData(searchData);
+        }
     }
 }
