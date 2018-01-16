@@ -17,6 +17,7 @@ namespace CP
             void Add(const std::string searchName, std::unique_ptr<Searcher>&& searchFunction);
             void SetSearchData(const std::shared_ptr<SearchData>& searchData);
             const std::shared_ptr<SearchData>& GetSearchData()const;
+            static void LoadFile(const std::string& str);
         private:
             MatrixRowSearcher() = default;
             MatrixRowSearcher(const MatrixRowSearcher& rhs) = delete;

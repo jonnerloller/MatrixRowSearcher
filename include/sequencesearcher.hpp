@@ -16,11 +16,11 @@ namespace CP
         SequenceSearcher& operator = (const SequenceSearcher& rhs) = delete;
         SequenceSearcher& operator = (SequenceSearcher&& rhs) = delete;
         virtual ~SequenceSearcher() = default;
-        virtual RowIndices Search(const std::vector<int>&sequence) override;
+        virtual RowIndices Search(const CP::RowData&sequence) override;
         protected:
         private:
 
-        bool SearchRowForSequence(int row, const std::vector<int>&sequence);
+        bool SearchRowForSequence(int row, const CP::RowData&sequence);
     };
 }
 

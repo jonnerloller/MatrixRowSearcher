@@ -38,7 +38,7 @@ namespace CP
             Searcher& operator = (const Searcher& rhs) = delete;
             Searcher& operator = (Searcher&& rhs) = delete;
             virtual ~Searcher() = default;
-            virtual RowIndices Search(const std::vector<int>&sequence) = 0;
+            virtual RowIndices Search(const CP::RowData&sequence) = 0;
         protected:
             std::shared_ptr<SearchData> m_SearchData;
         private:

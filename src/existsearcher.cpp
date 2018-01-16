@@ -1,7 +1,7 @@
 #include "../include/existsearcher.hpp"
 namespace CP
 {
-    RowIndices ExistSearcher::Search(const std::vector<int>&sequence)
+    RowIndices ExistSearcher::Search(const CP::RowData&sequence)
     {
         RowIndices rows;
         rows.reserve(m_SearchData->m_InputData.size());
@@ -17,7 +17,7 @@ namespace CP
         return rows;
     }
 
-    bool ExistSearcher::SearchRowForSequence(int row, const std::vector<int>&sequence)
+    bool ExistSearcher::SearchRowForSequence(int row, const CP::RowData&sequence)
     {
         SearchNode* currentNode = m_SearchData->m_PreProcessedData[row].get();
         // For this search, we just need to know if All numbers in the sequence exist in our data.
