@@ -34,12 +34,12 @@ namespace CP
             if (childNode != nullptr)
             {
                 numMatches = 1 + SearchMatch(childNode, childSequence);
-                if (numMatches == sequence.size()) return numMatches;
+                if (numMatches == static_cast<int>(sequence.size())) return numMatches;
             }
             for (const auto &it : node->m_children)
             {
                 numMatches = SearchMatch(it.second.get(), childSequence);
-                if (numMatches == sequence.size()) return numMatches;
+                if (numMatches == static_cast<int>(sequence.size())) return numMatches;
             }
             
         }
