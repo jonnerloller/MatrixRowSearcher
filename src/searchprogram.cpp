@@ -28,6 +28,7 @@ void RunUnitTests(const std::string&, CP::CommandLineOptions::ArgumentPack&&)
 {
     CP::RunSequenceSearchUnitTests();
     CP::RunExistSearchUnitTests();
+    CP::RunClosestSearchUnitTests();
 }
 
 void PerformSequenceSearch(const std::string& argIdentifier, CP::CommandLineOptions::ArgumentPack&& arguments)
@@ -87,6 +88,7 @@ void InitCommandLineArguments()
     CP::CommandLineOptions& commandLineOptions = CP::CommandLineOptions::GetInstance();
     commandLineOptions.AddCommandLineOption("sequenceSearch", PerformSequenceSearch);
     commandLineOptions.AddCommandLineOption("existSearch", PerformSequenceSearch);
+    commandLineOptions.AddCommandLineOption("closestSearch", PerformSequenceSearch);
 
     commandLineOptions.AddCommandLineOption("unitTests", RunUnitTests);
 }
@@ -103,24 +105,6 @@ int main(int argc, char* argv[])
     {
         ProcessCommandLineArgument(std::string(argv[arg]));
     }
-
-    CP::MatrixRowSearcher& matrixRowSearcher = CP::MatrixRowSearcher::GetInstance();
-    CP::RowIndices indices = matrixRowSearcher.Search("sequenceSearch",{1,2});
-
-    indices = matrixRowSearcher.Search("sequenceSearch",{ 0 });
-    indices = matrixRowSearcher.Search("sequenceSearch",{ 8 });
-    indices = matrixRowSearcher.Search("sequenceSearch",{ 7 });
-    indices = matrixRowSearcher.Search("sequenceSearch",{ 5,6,7 });
-    indices = matrixRowSearcher.Search("sequenceSearch",{ 1,1,4,5 });
-    indices = matrixRowSearcher.Search("sequenceSearch",{ 1,2,3,1,1,4,5,6,7 });
-    indices = matrixRowSearcher.Search("sequenceSearch",{ 1,1,4,6 });
-    indices = matrixRowSearcher.Search("sequenceSearch",{ 2,3,1,1,4,5,6,7 });
-
-    indices = matrixRowSearcher.Search("existSearch",{ 0 });
-    indices = matrixRowSearcher.Search("existSearch",{ 2,7 });
-    indices = matrixRowSearcher.Search("existSearch",{ 1,6 });
-    indices = matrixRowSearcher.Search("existSearch",{ 2,3,8 });
-    indices = matrixRowSearcher.Search("existSearch",{ 4,4,4,4,4,1 });
     
     return 0;
 }

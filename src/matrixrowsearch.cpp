@@ -1,6 +1,7 @@
 #include "../include/matrixrowsearch.hpp"
 #include "../include/sequencesearcher.hpp"
 #include "../include/existsearcher.hpp"
+#include "../include/closestsearcher.hpp"
 #include <utility>
 #include <fstream>
 #include <iterator>
@@ -18,6 +19,7 @@ namespace CP
         m_SearchData = searchData;
         Add("sequenceSearch", std::make_unique<CP::SequenceSearcher>(m_SearchData));
         Add("existSearch", std::make_unique<CP::ExistSearcher>(m_SearchData));
+        Add("closestSearch", std::make_unique<CP::ClosestSearcher>(m_SearchData));
     }
 
     const std::shared_ptr<SearchData>& MatrixRowSearcher::GetSearchData()const
