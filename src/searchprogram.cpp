@@ -4,6 +4,7 @@
 #include "../include/existsearcher.hpp"
 #include "../include/commandlineoptions.hpp"
 #include "../include/unittests.hpp"
+#include "../include/timer.hpp"
 #include <iostream>
 #include <functional>
 #include <cstring>
@@ -12,6 +13,7 @@
 #include <iterator>
 #include <string>
 #include <cstdlib>
+
 
 CP::RowData ConvertCommandLineArgumentsToInt(CP::CommandLineOptions::ArgumentPack&& arguments)
 {
@@ -26,9 +28,12 @@ CP::RowData ConvertCommandLineArgumentsToInt(CP::CommandLineOptions::ArgumentPac
 
 void RunUnitTests(const std::string&, CP::CommandLineOptions::ArgumentPack&&)
 {
+    CP::Timer timer;
+    timer.StartTimer();
     CP::RunSequenceSearchUnitTests();
     CP::RunExistSearchUnitTests();
     CP::RunClosestSearchUnitTests();
+    std::cout << "Tests took " << timer.TripNanoseconds().count() << "ns" << std::endl;
 }
 
 void PerformSequenceSearch(const std::string& argIdentifier, CP::CommandLineOptions::ArgumentPack&& arguments)
