@@ -84,4 +84,21 @@ namespace CP
         CP::MatrixRowSearcher::LoadFile("data/large.txt");
         std::cout << "[Exist Search] tests complete" <<std::endl;
     }
+
+    void RunClosestSearchUnitTests()
+    {
+        CP::MatrixRowSearcher::LoadFile("data/simple.txt");
+
+        std::cout << "Begin running [Exist Search] tests" << std::endl;
+        RunTest("closestSearch", {1,0,3,7,5}, { 0 });
+        /*
+        1 2 3 4 5 6
+        6 5 4 3 2 1
+        1 1 1 2 1 3
+        11 305 468 213 446 102
+        0 1 0 2 9 7
+        */
+        CP::MatrixRowSearcher::LoadFile("data/large.txt");
+        std::cout << "[Exist Search] tests complete" << std::endl;
+    }
 }
