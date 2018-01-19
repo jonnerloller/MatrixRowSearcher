@@ -36,6 +36,11 @@ void RunUnitTests(const std::string&, CP::CommandLineOptions::ArgumentPack&&)
     std::cout << "Tests took " << timer.TripNanoseconds().count() << "ns" << std::endl;
 }
 
+void RunLargeTests(const std::string&, CP::CommandLineOptions::ArgumentPack&&)
+{
+    CP::RunLargeTests();
+}
+
 void PerformSequenceSearch(const std::string& argIdentifier, CP::CommandLineOptions::ArgumentPack&& arguments)
 {
     CP::RowData convertedArguments = ConvertCommandLineArgumentsToInt(std::move(arguments));
@@ -96,6 +101,7 @@ void InitCommandLineArguments()
     commandLineOptions.AddCommandLineOption("closestSearch", PerformSequenceSearch);
 
     commandLineOptions.AddCommandLineOption("unitTests", RunUnitTests);
+    commandLineOptions.AddCommandLineOption("largeTests", RunLargeTests);
 }
 
 int main(int argc, char* argv[])
@@ -110,6 +116,5 @@ int main(int argc, char* argv[])
     {
         ProcessCommandLineArgument(std::string(argv[arg]));
     }
-    
     return 0;
 }

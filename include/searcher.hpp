@@ -2,17 +2,39 @@
 #define SEARCH_HPP
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include <memory>
 namespace CP
 {
     using SearchValue = int;
     using RowData = std::vector<SearchValue>;
     using SearchMatrix = std::vector<RowData>;
+    
+    struct SearchNode;
+    class NodePool
+    {
+    public:
+        NodePool() = default;
+        ~NodePool() = default;
+        NodePool(const NodePool& rhs) = delete;
+        NodePool(NodePool&& rhs) = delete;
+        NodePool& operator = (const NodePool& rhs) = delete;
+        NodePool& operator = (NodePool&& rhs) = delete;
+
+        void InitAndReserveMemory(size_t numNodesToReserve);
+        void Clear();
+        SearchNode* Allocate();
+    private:
+        std::vector<SearchNode> m_pool;
+    };
 
     struct SearchNode
     {
-        std::unordered_map<SearchValue, std::unique_ptr<SearchNode>> m_children;
-        SearchNode* InsertNode(SearchValue key);
+        static const int INVALID_INDEX = -1;
+        std::map<SearchValue, SearchNode*> m_children;
+        std::vector<int> m_indicesOfNodes;
+
+        SearchNode* InsertNode(SearchValue key, NodePool& pool, int index = INVALID_INDEX);
         SearchNode* FindNode(SearchValue key);
     };
 
@@ -23,9 +45,11 @@ namespace CP
         SearchData(SearchData&& rhs) = delete;
         SearchData& operator = (const SearchData& rhs) = delete;
         SearchData& operator = (SearchData&& rhs) = delete;
+        ~SearchData() = default;
 
         SearchMatrix m_InputData;
-        std::vector<std::unique_ptr<SearchNode>> m_PreProcessedData;
+        std::vector<SearchNode*> m_PreProcessedData;
+        NodePool m_MemoryPool;
     };
 
     using RowIndices = std::vector<int>;

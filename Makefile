@@ -10,7 +10,8 @@ GCCOPTIMIZE = -O3
 gccDebug:
 	g++ -o searchprogram_gcc $(SOURCEFILES) $(TESTFILES) $(GCCFLAGS)
 
-clangDebug:
+gccOptimize:
+	g++ -o searchprogram_gcc $(SOURCEFILES) $(TESTFILES) $(GCCFLAGS) $(GCCOPTIMIZE)
 
 clean:
 	rm -f *.exe *.o *.obj

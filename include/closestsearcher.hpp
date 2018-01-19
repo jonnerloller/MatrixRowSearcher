@@ -19,6 +19,8 @@ namespace CP
     private:
 
         int SearchRowForClosestSequence(int row, const CP::RowData&sequence);
+        int SearchMatch(int row,SearchNode* node, const CP::RowData&sequence);
+        int AnalyzePattern(int row, int col, const CP::RowData&sequence);
     };
 }
 #endif
