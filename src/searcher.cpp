@@ -15,6 +15,7 @@ namespace CP
 
     SearchNode* NodePool::Allocate()
     {
+        // If we resize our allactor, all our pointers will be invalidated.
         assert(m_pool.size() < m_pool.capacity());
         m_pool.push_back(SearchNode());
         return &m_pool.back();
@@ -23,6 +24,7 @@ namespace CP
     SearchData::SearchData(const SearchMatrix&& inputData)
         :m_InputData(inputData)
     {
+        //Hold's the root nodes
         m_PreProcessedData.reserve(inputData.size());
 
         size_t numRootNodes = inputData.size();
@@ -63,6 +65,8 @@ namespace CP
     {
         auto it = m_children.find(key);
         SearchNode* currentNode = nullptr;
+
+        // If we fail to find an existing node, we have to allocate a new node and insert it into the tree.
         if (it == m_children.end())
         {
             currentNode = memoryPool.Allocate();
@@ -73,6 +77,7 @@ namespace CP
             currentNode = it->second;
         }
         
+        // optimization: store the index of the node.
         if (currentNode && index != INVALID_INDEX)
         {
             m_indicesOfNodes.push_back(index);

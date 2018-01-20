@@ -5,19 +5,31 @@
 #include <string>
 namespace CP
 {
-    // This should be the Program itself
-    // The main program just instantiates this class and runs it.
+    // Basically the "application" itself, this class handles most of the
+    // program logic called by the command line parser.
     class MatrixRowSearcher
     {
         public:
+            enum DisplayOptions
+            {
+                DISPLAY_ROW_INDEX_ONLY = 0,
+                DISPLAY_ROW_INDEX_AND_DATA,
+                DISPLAY_NONE,
+            };
 
             static MatrixRowSearcher& GetInstance();
 
             RowIndices Search(const std::string searchName, const RowData& sequence);
-            void Add(const std::string searchName, std::unique_ptr<Searcher>&& searchFunction);
+            void AddSearchFunction(const std::string searchName, std::unique_ptr<Searcher>&& searchFunction);
             void SetSearchData(const std::shared_ptr<SearchData>& searchData);
+            void SetDisplayOption(DisplayOptions option);
+            DisplayOptions GetDisplayOption()const;
             const std::shared_ptr<SearchData>& GetSearchData()const;
             static void LoadFile(const std::string& str);
+            static void LoadEncryptedFile(const std::string& str);
+            static void PrintSequence(const RowData& sequence);
+            static void PrintRowIndices(const RowIndices& indices);
+            static void PrintRowAndRowIndices(const RowIndices& indices, const SearchMatrix& searchMatrix);
         private:
             MatrixRowSearcher() = default;
             MatrixRowSearcher(const MatrixRowSearcher& rhs) = delete;
@@ -27,6 +39,8 @@ namespace CP
             virtual ~MatrixRowSearcher() = default;
             std::map<std::string, std::unique_ptr<Searcher>> m_Searches;
             std::shared_ptr<SearchData> m_SearchData;
+            DisplayOptions m_Option;
+
     };
 }
 

@@ -10,16 +10,8 @@ namespace CP
     {
         if (displayTestSequence)
         {
-            std::cout << "Running test [" << searchName << "] with sequence [";
-            if (sequence.size())
-            {
-                std::cout << sequence[0];
-            }
-            for (int i = 1; i < static_cast<int>(sequence.size()); ++i)
-            {
-                std::cout << "," << sequence[i];
-            }
-            std::cout << "]" << std::endl;
+            std::cout << "Running test [" << searchName << "] with sequence ";
+            MatrixRowSearcher::PrintSequence(sequence);
         }
         
 
@@ -37,91 +29,72 @@ namespace CP
     }
     void RunSequenceSearchUnitTests()
     {
+        CP::MatrixRowSearcher::DisplayOptions currentOption = CP::MatrixRowSearcher::GetInstance().GetDisplayOption();
+        CP::MatrixRowSearcher::GetInstance().SetDisplayOption(MatrixRowSearcher::DISPLAY_NONE);
         CP::MatrixRowSearcher::LoadFile("data/simple.txt");
         std::cout << "Begin running [Sequence Search] tests" <<std::endl;
        
-        RunTest("sequenceSearch", { 0 }, { 4,5});
-        RunTest("sequenceSearch", { 1 }, { 0,1,2,4,5 });
-        RunTest("sequenceSearch", { 2 }, { 0,1,2,4,5 });
-        RunTest("sequenceSearch", { 3 }, {0,1,2});
-        RunTest("sequenceSearch", { 4 }, {0,1,5});
-        RunTest("sequenceSearch", { 5 }, {0,1});
-        RunTest("sequenceSearch", { 6 }, {0,1,5});
-        RunTest("sequenceSearch", { 1,2 }, {0,2});
-        RunTest("sequenceSearch", { 2,3 }, {0});
-        RunTest("sequenceSearch", { 3,4 }, { 0 });
-        RunTest("sequenceSearch", { 4,3 }, { 1 });
-        RunTest("sequenceSearch", { 2,1 }, {1,2,5});
-        RunTest("sequenceSearch", { 1,1 }, {2});
-        RunTest("sequenceSearch", { 5,4 }, { 1 });
-        /*
-        1 2 3 4 5 6
-        6 5 4 3 2 1
-        1 1 1 2 1 3
-        11 305 468 213 446 102
-        0 1 0 2 9 7
-        6 0 4 2 2 1
-        */
+        RunTest("sequenceSearch", { 0 }, { 4,5}, false);
+        RunTest("sequenceSearch", { 1 }, { 0,1,2,4,5 }, false);
+        RunTest("sequenceSearch", { 2 }, { 0,1,2,4,5 }, false);
+        RunTest("sequenceSearch", { 3 }, {0,1,2}, false);
+        RunTest("sequenceSearch", { 4 }, {0,1,5}, false);
+        RunTest("sequenceSearch", { 5 }, {0,1}, false);
+        RunTest("sequenceSearch", { 6 }, {0,1,5}, false);
+        RunTest("sequenceSearch", { 1,2 }, {0,2}, false);
+        RunTest("sequenceSearch", { 2,3 }, {0}, false);
+        RunTest("sequenceSearch", { 3,4 }, { 0 }, false);
+        RunTest("sequenceSearch", { 4,3 }, { 1 }, false);
+        RunTest("sequenceSearch", { 2,1 }, {1,2,5}, false);
+        RunTest("sequenceSearch", { 1,1 }, {2}, false);
+        RunTest("sequenceSearch", { 5,4 }, { 1 }, false);
+
         std::cout << "[Sequence Search] tests complete" <<std::endl;
+        CP::MatrixRowSearcher::GetInstance().SetDisplayOption(currentOption);
     }
 
     void RunExistSearchUnitTests()
     {
+        CP::MatrixRowSearcher::DisplayOptions currentOption = CP::MatrixRowSearcher::GetInstance().GetDisplayOption();
+        CP::MatrixRowSearcher::GetInstance().SetDisplayOption(MatrixRowSearcher::DISPLAY_NONE);
         CP::MatrixRowSearcher::LoadFile("data/simple.txt");
 
         std::cout << "Begin running [Exist Search] tests" <<std::endl;
-        RunTest("existSearch", { 0 }, { 4 ,5});
-        RunTest("existSearch", { 10 }, { });
-        RunTest("existSearch", { 2 }, { 0,1,2,4 ,5});
-        RunTest("existSearch", { 3 }, { 0,1,2 });
-        RunTest("existSearch", { 4 }, { 0,1,5});
-        RunTest("existSearch", { 5 }, { 0,1 });
-        RunTest("existSearch", { 6 }, { 0,1,5});
-        RunTest("existSearch", { 1,2 }, { 0,1,2,4,5});
-        RunTest("existSearch", { 3,1 }, { 0,1,2 });
-        /*
-        1 2 3 4 5 6
-        6 5 4 3 2 1
-        1 1 1 2 1 3
-        11 305 468 213 446 102
-        0 1 0 2 9 7
-        6 0 4 2 2 1
-        */
+        RunTest("existSearch", { 0 }, { 4 ,5}, false);
+        RunTest("existSearch", { 10 }, { }, false);
+        RunTest("existSearch", { 2 }, { 0,1,2,4 ,5}, false);
+        RunTest("existSearch", { 3 }, { 0,1,2 }, false);
+        RunTest("existSearch", { 4 }, { 0,1,5}, false);
+        RunTest("existSearch", { 5 }, { 0,1 }, false);
+        RunTest("existSearch", { 6 }, { 0,1,5}, false);
+        RunTest("existSearch", { 1,2 }, { 0,1,2,4,5}, false);
+        RunTest("existSearch", { 3,1 }, { 0,1,2 }, false);
+
         std::cout << "[Exist Search] tests complete" <<std::endl;
+        CP::MatrixRowSearcher::GetInstance().SetDisplayOption(currentOption);
     }
 
     void RunClosestSearchUnitTests()
     {
+        CP::MatrixRowSearcher::DisplayOptions currentOption = CP::MatrixRowSearcher::GetInstance().GetDisplayOption();
+        CP::MatrixRowSearcher::GetInstance().SetDisplayOption(MatrixRowSearcher::DISPLAY_NONE);
         CP::MatrixRowSearcher::LoadFile("data/simple.txt");
 
         std::cout << "Begin running [Exist Search] tests" << std::endl;
-        RunTest("closestSearch", {1,0,3,7,5}, { 0 });
-        RunTest("closestSearch", { 1,20,1,5 }, { 2 });
-        RunTest("closestSearch", { 468,0,7,25 }, { 3 });
-        RunTest("closestSearch", { 1,2,1,4 }, { 0 });
-        RunTest("closestSearch", { 5,0,4,2 }, { 5 });
-        /*
-        1 2 3 4 5 6
-        6 5 4 3 2 1
-        1 1 1 2 1 3
-        11 305 468 213 446 102
-        0 1 0 2 9 7
-        6 0 4 2 2 1
-        */
+        RunTest("closestSearch", {1,0,3,7,5}, { 0 }, false);
+        RunTest("closestSearch", { 1,20,1,5 }, { 2 }, false);
+        RunTest("closestSearch", { 468,0,7,25 }, { 3 }, false);
+        RunTest("closestSearch", { 1,2,1,4 }, { 0 }, false);
+        RunTest("closestSearch", { 5,0,4,2 }, { 5 }, false);
 
-        //
-        //
-        // 5 0 4 2 
-        //
-        //
-        //
-        //
-        //
         std::cout << "[Exist Search] tests complete" << std::endl;
+        CP::MatrixRowSearcher::GetInstance().SetDisplayOption(currentOption);
     }
 
     void RunLargeTests()
     {
+        CP::MatrixRowSearcher::DisplayOptions currentOption = CP::MatrixRowSearcher::GetInstance().GetDisplayOption();
+        CP::MatrixRowSearcher::GetInstance().SetDisplayOption(MatrixRowSearcher::DISPLAY_NONE);
         std::cout << "Loading and processing Data" << std::endl;
         CP::MatrixRowSearcher::LoadFile("data/large.txt");
         std::cout << "Data processed!" << std::endl;
@@ -147,6 +120,6 @@ namespace CP
         timer.StopTimer();
         std::cout << "Tests took " << timer.GetNanoseconds().count() << "ns" << std::endl;
         std::cout << "Average time per iteration " << timer.GetNanoseconds().count() / numIterations << "ns" << std::endl;
-
+        CP::MatrixRowSearcher::GetInstance().SetDisplayOption(currentOption);
     }
 }

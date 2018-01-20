@@ -5,6 +5,7 @@
 #include <utility>
 #include <fstream>
 #include <iterator>
+#include <iostream>
 namespace CP
 {
     MatrixRowSearcher& MatrixRowSearcher::GetInstance()
@@ -15,11 +16,14 @@ namespace CP
 
     void MatrixRowSearcher::SetSearchData(const std::shared_ptr<SearchData>& searchData)
     {
+        // Is called when we load a file. We have to reinitialize all our search functions
+        // with the new data.
+
         m_Searches.clear();
         m_SearchData = searchData;
-        Add("sequenceSearch", std::make_unique<CP::SequenceSearcher>(m_SearchData));
-        Add("existSearch", std::make_unique<CP::ExistSearcher>(m_SearchData));
-        Add("closestSearch", std::make_unique<CP::ClosestSearcher>(m_SearchData));
+        AddSearchFunction("sequenceSearch", std::make_unique<CP::SequenceSearcher>(m_SearchData));
+        AddSearchFunction("existSearch", std::make_unique<CP::ExistSearcher>(m_SearchData));
+        AddSearchFunction("closestSearch", std::make_unique<CP::ClosestSearcher>(m_SearchData));
     }
 
     const std::shared_ptr<SearchData>& MatrixRowSearcher::GetSearchData()const
@@ -27,20 +31,82 @@ namespace CP
         return m_SearchData;
     }
 
+    void MatrixRowSearcher::PrintSequence(const RowData& sequence)
+    {
+        if (sequence.size())
+        {
+          std::cout << "[" << sequence[0];
+          for (int i = 1; i < static_cast<int>(sequence.size()); ++i)
+          {
+              std::cout << "," << sequence[i];
+          }
+          std::cout << "]" << std::endl;
+        }
+    }
+
+    void MatrixRowSearcher::PrintRowIndices(const RowIndices& indices)
+    {
+        if (indices.size())
+        {
+            std::cout << "[" << indices[0] << "]";
+            for (int i = 1; i < static_cast<int>(indices.size()); ++i)
+            {
+                std::cout << ", [" << indices[i] << "]";
+            }
+            std::cout << std::endl;
+        }
+    }
+    void MatrixRowSearcher::PrintRowAndRowIndices(const RowIndices& indices, const SearchMatrix& searchMatrix)
+    {
+        for (auto i : indices)
+        {
+            std::cout << "[" << i << "] : ";
+            PrintSequence(searchMatrix[i]);
+            std::cout << std::endl;
+        }
+    }
+
     RowIndices MatrixRowSearcher::Search(const std::string searchName, const RowData& sequence)
     {
+        RowIndices result;
+        // Make sure the search function exists. If not we won't return anything.
         auto it = m_Searches.find(searchName);
         if (it != m_Searches.end())
         {
-            return it->second->Search(sequence);
+            result = it->second->Search(sequence);
+            if (m_Option == DISPLAY_ROW_INDEX_ONLY)
+            {
+                std::cout << "[" << searchName << "] completed with rows:" << std::endl;
+                PrintRowIndices(result);
+            }
+            else if (m_Option == DISPLAY_ROW_INDEX_AND_DATA)
+            {
+                std::cout << "[" << searchName << "] completed with rows:" << std::endl;
+                PrintRowAndRowIndices(result,m_SearchData->m_InputData);
+            }
         }
-        return RowIndices();
+        else
+        {
+            std::cerr << "Invalid Search function [" << searchName << "]" << std::endl;
+        }
+        return result;
     }
 
-    void MatrixRowSearcher::Add(const std::string searchName, std::unique_ptr<Searcher>&& searchFunction)
+    void MatrixRowSearcher::AddSearchFunction(const std::string searchName, std::unique_ptr<Searcher>&& searchFunction)
     {
         m_Searches.emplace(std::make_pair(searchName, std::unique_ptr<Searcher>(std::move(searchFunction))));
     }
+
+    void MatrixRowSearcher::SetDisplayOption(DisplayOptions option)
+    {
+        m_Option = option;
+    }
+
+    CP::MatrixRowSearcher::DisplayOptions MatrixRowSearcher::GetDisplayOption()const
+    {
+        return m_Option;
+    }
+
     void MatrixRowSearcher::LoadFile(const std::string& str)
     {
         std::ifstream file(str);
@@ -69,5 +135,10 @@ namespace CP
             std::shared_ptr<CP::SearchData> searchData = std::make_shared<CP::SearchData>(std::move(searchMatrix));
             GetInstance().SetSearchData(searchData);
         }
+    }
+    
+    void MatrixRowSearcher::LoadEncryptedFile(const std::string& str)
+    {
+
     }
 }

@@ -16,9 +16,9 @@ namespace CP
         static double   ToMilliseconds(const Seconds       s) noexcept;
         static double   ToSeconds(const Milliseconds  ms) noexcept;
         static double   ToSeconds(const Nanoseconds   ns) noexcept;
-        Nanoseconds     TripNanoseconds(void) noexcept;
-        Milliseconds    TripMilliseconds(void) noexcept;
-        Seconds         TripSeconds(void) noexcept;
+        Nanoseconds     SplitNanoseconds(void) noexcept;
+        Milliseconds    SplitMilliseconds(void) noexcept;
+        Seconds         SplitSeconds(void) noexcept;
         Nanoseconds     GetNanoseconds(void) const noexcept;
         Milliseconds    GetMilliseconds(void) const noexcept;
         Seconds         GetSeconds(void) const noexcept;

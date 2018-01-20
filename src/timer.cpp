@@ -31,7 +31,7 @@ namespace CP
         return ns.count() * (1.0 / 1000000000.0);
     }
 
-    Timer::Nanoseconds Timer::TripNanoseconds(void) noexcept
+    Timer::Nanoseconds Timer::SplitNanoseconds(void) noexcept
     {
         StopTimer();
         const Nanoseconds elapsedNanoseconds = GetNanoseconds();
@@ -39,7 +39,7 @@ namespace CP
         return elapsedNanoseconds;
     }
 
-    Timer::Milliseconds Timer::TripMilliseconds(void) noexcept
+    Timer::Milliseconds Timer::SplitMilliseconds(void) noexcept
     {
         StopTimer();
         const Milliseconds elapsedMilliseconds = GetMilliseconds();
@@ -47,7 +47,7 @@ namespace CP
         return elapsedMilliseconds;
     }
 
-    Timer::Seconds Timer::TripSeconds(void) noexcept
+    Timer::Seconds Timer::SplitSeconds(void) noexcept
     {
         StopTimer();
         const Seconds elapsedSeconds = GetSeconds();

@@ -4,6 +4,8 @@ namespace CP
     RowIndices ExistSearcher::Search(const CP::RowData&sequence)
     {
         RowIndices rows;
+        
+        //early termination.
         if (m_SearchData->m_InputData.size() && sequence.size() > m_SearchData->m_InputData[0].size())
             return rows;
 
@@ -11,8 +13,6 @@ namespace CP
 
         for (int row = 0; row < static_cast<int>(m_SearchData->m_InputData.size()); ++row)
         {
-            // I can guarantee that the first node is not empty because there will be 1 root node 
-
             if (SearchRowForSequence(row, sequence))
                 rows.push_back(row);
         }
