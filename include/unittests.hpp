@@ -6,6 +6,7 @@ namespace CP
     void RunSequenceSearchUnitTests();
     void RunExistSearchUnitTests();
     void RunClosestSearchUnitTests();
+    void RunLargeTests();
 }
 
 #endif

@@ -4,6 +4,7 @@
 #include "../include/existsearcher.hpp"
 #include "../include/commandlineoptions.hpp"
 #include "../include/unittests.hpp"
+#include "../include/timer.hpp"
 #include <iostream>
 #include <functional>
 #include <cstring>
@@ -12,6 +13,7 @@
 #include <iterator>
 #include <string>
 #include <cstdlib>
+
 
 CP::RowData ConvertCommandLineArgumentsToInt(CP::CommandLineOptions::ArgumentPack&& arguments)
 {
@@ -26,9 +28,54 @@ CP::RowData ConvertCommandLineArgumentsToInt(CP::CommandLineOptions::ArgumentPac
 
 void RunUnitTests(const std::string&, CP::CommandLineOptions::ArgumentPack&&)
 {
+    CP::Timer timer;
+    timer.StartTimer();
     CP::RunSequenceSearchUnitTests();
     CP::RunExistSearchUnitTests();
     CP::RunClosestSearchUnitTests();
+    std::cout << "Tests took " << timer.SplitNanoseconds().count() << "ns" << std::endl;
+}
+
+void RunLargeTests(const std::string&, CP::CommandLineOptions::ArgumentPack&&)
+{
+    CP::RunLargeTests();
+}
+
+void SetInputData(const std::string& argIdentifier, CP::CommandLineOptions::ArgumentPack&& arguments)
+{
+    if (argIdentifier == "rawInput")
+    {
+        if (arguments.size())
+        {
+            CP::MatrixRowSearcher::LoadFile(arguments[0]);
+        }
+    }
+    else if(argIdentifier == "encrpytedInput")
+    {
+        if (arguments.size())
+        {
+            CP::MatrixRowSearcher::LoadFile(arguments[0]);
+        }
+    }
+}
+
+void SetDisplayOption(const std::string& argIdentifier, CP::CommandLineOptions::ArgumentPack&& arguments)
+{
+    if (arguments.size())
+    {
+        if (arguments[0] == "none")
+        {
+            CP::MatrixRowSearcher::GetInstance().SetDisplayOption(CP::MatrixRowSearcher::DISPLAY_NONE);
+        }
+        else if (arguments[0] == "index")
+        {
+            CP::MatrixRowSearcher::GetInstance().SetDisplayOption(CP::MatrixRowSearcher::DISPLAY_ROW_INDEX_ONLY);
+        }
+        else if (arguments[0] == "all")
+        {
+            CP::MatrixRowSearcher::GetInstance().SetDisplayOption(CP::MatrixRowSearcher::DISPLAY_ROW_INDEX_AND_DATA);
+        }
+    }
 }
 
 void PerformSequenceSearch(const std::string& argIdentifier, CP::CommandLineOptions::ArgumentPack&& arguments)
@@ -76,11 +123,6 @@ void ProcessCommandLineArgument(std::string arg)
         CP::CommandLineOptions::GetInstance().RunCommandLine(commandLineOptionName, std::move(arguments));
         
     }
-    // Assumes that the first argument is the filename to load.
-    else
-    {
-        CP::MatrixRowSearcher::LoadFile(arg);
-    }
 }
 
 void InitCommandLineArguments()
@@ -91,6 +133,10 @@ void InitCommandLineArguments()
     commandLineOptions.AddCommandLineOption("closestSearch", PerformSequenceSearch);
 
     commandLineOptions.AddCommandLineOption("unitTests", RunUnitTests);
+    commandLineOptions.AddCommandLineOption("largeTests", RunLargeTests);
+    commandLineOptions.AddCommandLineOption("rawInput", SetInputData);
+    commandLineOptions.AddCommandLineOption("encrpytedInput", SetInputData);
+    commandLineOptions.AddCommandLineOption("displayOption", SetDisplayOption);
 }
 
 int main(int argc, char* argv[])
@@ -105,6 +151,5 @@ int main(int argc, char* argv[])
     {
         ProcessCommandLineArgument(std::string(argv[arg]));
     }
-    
     return 0;
 }
