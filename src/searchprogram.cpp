@@ -43,23 +43,25 @@ void RunLargeTests(const std::string&, CP::CommandLineOptions::ArgumentPack&&)
 
 void SetInputData(const std::string& argIdentifier, CP::CommandLineOptions::ArgumentPack&& arguments)
 {
-    if (argIdentifier == "rawInput")
+    if (argIdentifier == "inputRaw")
     {
         if (arguments.size())
         {
             CP::MatrixRowSearcher::LoadFile(arguments[0]);
         }
     }
-    else if(argIdentifier == "encrpytedInput")
+    else if(argIdentifier == "inputEncrypted")
     {
-        if (arguments.size())
+        if (arguments.size() == 2)
         {
-            CP::MatrixRowSearcher::LoadFile(arguments[0]);
+            std::string outputFileName = arguments[0];
+            int key = atoi(arguments[1].c_str());
+            CP::MatrixRowSearcher::LoadEncryptedFile(arguments[0],key);
         }
     }
 }
 
-void SetDisplayOption(const std::string& argIdentifier, CP::CommandLineOptions::ArgumentPack&& arguments)
+void SetDisplayOption(const std::string&, CP::CommandLineOptions::ArgumentPack&& arguments)
 {
     if (arguments.size())
     {
@@ -76,6 +78,20 @@ void SetDisplayOption(const std::string& argIdentifier, CP::CommandLineOptions::
             CP::MatrixRowSearcher::GetInstance().SetDisplayOption(CP::MatrixRowSearcher::DISPLAY_ROW_INDEX_AND_DATA);
         }
     }
+}
+
+void EncrpytFile(const std::string&, CP::CommandLineOptions::ArgumentPack&& arguments)
+{
+    if (arguments.size() == 3)
+    {
+        std::string inputFileName = arguments[0];
+        std::string outputFileName = arguments[1];
+        int key = atoi(arguments[2].c_str());
+
+        CP::MatrixRowSearcher::GetInstance().EncryptFile(inputFileName, outputFileName, key);
+        return;
+    }
+    std::cerr << "Invalid number of args for encrypt" << std::endl;
 }
 
 void PerformSequenceSearch(const std::string& argIdentifier, CP::CommandLineOptions::ArgumentPack&& arguments)
@@ -128,24 +144,26 @@ void ProcessCommandLineArgument(std::string arg)
 void InitCommandLineArguments()
 {
     CP::CommandLineOptions& commandLineOptions = CP::CommandLineOptions::GetInstance();
-    commandLineOptions.AddCommandLineOption("sequenceSearch", PerformSequenceSearch);
-    commandLineOptions.AddCommandLineOption("existSearch", PerformSequenceSearch);
-    commandLineOptions.AddCommandLineOption("closestSearch", PerformSequenceSearch);
+    commandLineOptions.AddCommandLineOption("sequenceSearch", PerformSequenceSearch,"/sequenceSearch:x,y,z [Checks to see if our integer sequence x,y,z can be found in our input data");
+    commandLineOptions.AddCommandLineOption("existSearch", PerformSequenceSearch, "/existSearch:x,y,z [Checks to see if all integers in the integer sequence x,y,z can be found in our input data.");
+    commandLineOptions.AddCommandLineOption("closestSearch", PerformSequenceSearch, "/existSearch:x,y,z [Get's the row with the closest match to integer sequence x,y,z");
 
-    commandLineOptions.AddCommandLineOption("unitTests", RunUnitTests);
-    commandLineOptions.AddCommandLineOption("largeTests", RunLargeTests);
-    commandLineOptions.AddCommandLineOption("rawInput", SetInputData);
-    commandLineOptions.AddCommandLineOption("encrpytedInput", SetInputData);
-    commandLineOptions.AddCommandLineOption("displayOption", SetDisplayOption);
+    commandLineOptions.AddCommandLineOption("unitTests", RunUnitTests,"/unitTests [Run Basic unit tests]");
+    commandLineOptions.AddCommandLineOption("largeTests", RunLargeTests,"/largeTests [Run Large unit test]");
+    commandLineOptions.AddCommandLineOption("inputRaw", SetInputData,"/inputRaw:\"filename\" [Loads and preprocess input data]");
+    commandLineOptions.AddCommandLineOption("inputEncrypted", SetInputData, "/inputEncrypted:\"filename\",integerkey [Loads encrpyted data, and decryps it using a secret key]");
+    commandLineOptions.AddCommandLineOption("encrypt", EncrpytFile, "/encrypt:\"inputfilename\",\"outputfilename\",integerkey [Loads a set of data, encrypts it using the secret key, and dumps the contents to a specified output file]");
+    commandLineOptions.AddCommandLineOption("displayOption", SetDisplayOption, "/displayOption:none|index|all, [Sets options to control the output]");
 }
 
 int main(int argc, char* argv[])
 {
-    
-    // argv [1] = inputFile 
-    // argv [2] = /searchSequence:1,2,3,4
-
     InitCommandLineArguments();
+
+    if (argc <= 1)
+    {
+        CP::CommandLineOptions::GetInstance().DumpCommandLineOptions();
+    }
 
     for (int arg = 1; arg < argc; ++arg)
     {

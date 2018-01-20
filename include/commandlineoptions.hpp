@@ -13,8 +13,9 @@ namespace CP
         using CommandLineCallback = std::function<void(const std::string& functionName,ArgumentPack&&)>;
         static CommandLineOptions& GetInstance();
         
-        void RunCommandLine(const std::string commandName, ArgumentPack&& arguments);
-        void AddCommandLineOption(const std::string commandName, CommandLineCallback callback);
+        void RunCommandLine(const std::string& commandName, ArgumentPack&& arguments);
+        void AddCommandLineOption(const std::string& commandName,CommandLineCallback callback, const std::string& description = "");
+        void DumpCommandLineOptions();
     private:
         CommandLineOptions() = default;
         CommandLineOptions(const CommandLineOptions& rhs) = delete;
@@ -22,7 +23,7 @@ namespace CP
         CommandLineOptions& operator = (const CommandLineOptions& rhs) = delete;
         CommandLineOptions& operator = (CommandLineOptions&& rhs) = delete;
         virtual ~CommandLineOptions() = default;
-        std::map<std::string, CommandLineCallback> m_CommandLineOptions;
+        std::map<std::string, std::pair<std::string,CommandLineCallback>> m_CommandLineOptions;
     };
 }
 #endif

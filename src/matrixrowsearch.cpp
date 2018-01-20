@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iterator>
 #include <iostream>
+#include <algorithm>
 namespace CP
 {
     MatrixRowSearcher& MatrixRowSearcher::GetInstance()
@@ -55,6 +56,10 @@ namespace CP
             }
             std::cout << std::endl;
         }
+        else
+        {
+            std::cout << "No matches found in data" << std::endl;
+        }
     }
     void MatrixRowSearcher::PrintRowAndRowIndices(const RowIndices& indices, const SearchMatrix& searchMatrix)
     {
@@ -63,6 +68,10 @@ namespace CP
             std::cout << "[" << i << "] : ";
             PrintSequence(searchMatrix[i]);
             std::cout << std::endl;
+        }
+        if(indices.size() == 0)
+        {
+            std::cout << "No matches found in data" << std::endl;
         }
     }
 
@@ -107,13 +116,8 @@ namespace CP
         return m_Option;
     }
 
-    void MatrixRowSearcher::LoadFile(const std::string& str)
+    void MatrixRowSearcher::ProcessFileData(const std::vector<int>& data)
     {
-        std::ifstream file(str);
-        std::istream_iterator<int> it(file);
-        std::istream_iterator<int> eof;
-        CP::RowData data;
-        std::copy(it, eof, std::back_inserter(data));
         CP::SearchMatrix searchMatrix;
         // First 2 arguments are Width and Height
         if (data.size() > 2)
@@ -136,9 +140,40 @@ namespace CP
             GetInstance().SetSearchData(searchData);
         }
     }
-    
-    void MatrixRowSearcher::LoadEncryptedFile(const std::string& str)
-    {
 
+    static std::vector<int> ExtractDataFromFile(const std::string& inputFileName)
+    {
+        std::ifstream file(inputFileName);
+        std::istream_iterator<int> it(file);
+        std::istream_iterator<int> eof;
+        std::vector<int> data;
+        std::copy(it, eof, std::back_inserter(data));
+        return data;
+    }
+
+    void MatrixRowSearcher::LoadFile(const std::string& inputFileName)
+    {
+        std::vector<int> data = ExtractDataFromFile(inputFileName);
+        ProcessFileData(data);
+    }
+
+    static void EncryptOrDecryptData(std::vector<int>& data, int key)
+    {
+        std::transform(data.begin(), data.end(), data.begin(), [=](int i) {return i ^ key; });
+    }
+
+    void MatrixRowSearcher::EncryptFile(const std::string& inputFileName, const std::string& outputFileName, int key)
+    {
+        std::vector<int> data = ExtractDataFromFile(inputFileName);
+        EncryptOrDecryptData(data, key);
+        std::ofstream outFile(outputFileName);
+        std::copy(data.begin(), data.end(), std::ostream_iterator<int>(outFile, " "));
+    }
+    
+    void MatrixRowSearcher::LoadEncryptedFile(const std::string& inputFileName, int key)
+    {
+        std::vector<int> data = ExtractDataFromFile(inputFileName);
+        EncryptOrDecryptData(data,key);
+        ProcessFileData(data);
     }
 }

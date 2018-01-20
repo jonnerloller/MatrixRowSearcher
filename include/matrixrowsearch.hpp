@@ -25,8 +25,11 @@ namespace CP
             void SetDisplayOption(DisplayOptions option);
             DisplayOptions GetDisplayOption()const;
             const std::shared_ptr<SearchData>& GetSearchData()const;
-            static void LoadFile(const std::string& str);
-            static void LoadEncryptedFile(const std::string& str);
+
+            static void ProcessFileData(const std::vector<int>& data);
+            static void LoadFile(const std::string& inputFileName);
+            static void LoadEncryptedFile(const std::string& inputFileName, int key);
+            static void EncryptFile(const std::string& inputFileName,const std::string& outputFileName, int key);
             static void PrintSequence(const RowData& sequence);
             static void PrintRowIndices(const RowIndices& indices);
             static void PrintRowAndRowIndices(const RowIndices& indices, const SearchMatrix& searchMatrix);

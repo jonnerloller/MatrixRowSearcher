@@ -3,7 +3,8 @@
 #include "../include/timer.hpp"
 #include <cassert>
 #include <iostream>
-
+#include <ctime>
+#include <cstdlib>
 namespace CP
 {
     static void RunTest(const std::string& searchName, CP::RowData&& sequence, CP::RowIndices&& expectedResult, bool displayTestSequence = true)
@@ -31,7 +32,11 @@ namespace CP
     {
         CP::MatrixRowSearcher::DisplayOptions currentOption = CP::MatrixRowSearcher::GetInstance().GetDisplayOption();
         CP::MatrixRowSearcher::GetInstance().SetDisplayOption(MatrixRowSearcher::DISPLAY_NONE);
-        CP::MatrixRowSearcher::LoadFile("data/simple.txt");
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
+        int generated_key = std::rand();
+        CP::MatrixRowSearcher::EncryptFile("data/simple.txt","data/unittestencryptedfile", generated_key);
+        CP::MatrixRowSearcher::LoadEncryptedFile("data/unittestencryptedfile", generated_key);
+
         std::cout << "Begin running [Sequence Search] tests" <<std::endl;
        
         RunTest("sequenceSearch", { 0 }, { 4,5}, false);
@@ -57,7 +62,10 @@ namespace CP
     {
         CP::MatrixRowSearcher::DisplayOptions currentOption = CP::MatrixRowSearcher::GetInstance().GetDisplayOption();
         CP::MatrixRowSearcher::GetInstance().SetDisplayOption(MatrixRowSearcher::DISPLAY_NONE);
-        CP::MatrixRowSearcher::LoadFile("data/simple.txt");
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
+        int generated_key = std::rand();
+        CP::MatrixRowSearcher::EncryptFile("data/simple.txt", "data/unittestencryptedfile", generated_key);
+        CP::MatrixRowSearcher::LoadEncryptedFile("data/unittestencryptedfile", generated_key);
 
         std::cout << "Begin running [Exist Search] tests" <<std::endl;
         RunTest("existSearch", { 0 }, { 4 ,5}, false);
@@ -78,7 +86,10 @@ namespace CP
     {
         CP::MatrixRowSearcher::DisplayOptions currentOption = CP::MatrixRowSearcher::GetInstance().GetDisplayOption();
         CP::MatrixRowSearcher::GetInstance().SetDisplayOption(MatrixRowSearcher::DISPLAY_NONE);
-        CP::MatrixRowSearcher::LoadFile("data/simple.txt");
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
+        int generated_key = std::rand();
+        CP::MatrixRowSearcher::EncryptFile("data/simple.txt", "data/unittestencryptedfile", generated_key);
+        CP::MatrixRowSearcher::LoadEncryptedFile("data/unittestencryptedfile", generated_key);
 
         std::cout << "Begin running [Exist Search] tests" << std::endl;
         RunTest("closestSearch", {1,0,3,7,5}, { 0 }, false);
